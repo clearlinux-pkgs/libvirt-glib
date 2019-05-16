@@ -5,18 +5,18 @@
 # Source0 file verified with key 0xBE86EBB415104FDF (dan@berrange.com)
 #
 Name     : libvirt-glib
-Version  : 1.0.0
-Release  : 12
-URL      : https://libvirt.org/sources/glib/libvirt-glib-1.0.0.tar.gz
-Source0  : https://libvirt.org/sources/glib/libvirt-glib-1.0.0.tar.gz
-Source99 : https://libvirt.org/sources/glib/libvirt-glib-1.0.0.tar.gz.asc
+Version  : 2.0.0
+Release  : 13
+URL      : https://libvirt.org/sources/glib/libvirt-glib-2.0.0.tar.gz
+Source0  : https://libvirt.org/sources/glib/libvirt-glib-2.0.0.tar.gz
+Source99 : https://libvirt.org/sources/glib/libvirt-glib-2.0.0.tar.gz.asc
 Summary  : libvirt glib integration for events
 Group    : Development/Tools
 License  : LGPL-2.1 LGPL-2.1+
-Requires: libvirt-glib-lib
-Requires: libvirt-glib-doc
-Requires: libvirt-glib-locales
-Requires: libvirt-glib-data
+Requires: libvirt-glib-data = %{version}-%{release}
+Requires: libvirt-glib-lib = %{version}-%{release}
+Requires: libvirt-glib-license = %{version}-%{release}
+Requires: libvirt-glib-locales = %{version}-%{release}
 BuildRequires : docbook-xml
 BuildRequires : gobject-introspection-dev
 BuildRequires : gtk-doc
@@ -29,6 +29,7 @@ BuildRequires : pkgconfig(gobject-2.0)
 BuildRequires : pkgconfig(gthread-2.0)
 BuildRequires : pkgconfig(libvirt)
 BuildRequires : pkgconfig(libxml-2.0)
+BuildRequires : vala
 
 %description
 This package provides integration between libvirt and the glib
@@ -45,9 +46,10 @@ data components for the libvirt-glib package.
 %package dev
 Summary: dev components for the libvirt-glib package.
 Group: Development
-Requires: libvirt-glib-lib
-Requires: libvirt-glib-data
-Provides: libvirt-glib-devel
+Requires: libvirt-glib-lib = %{version}-%{release}
+Requires: libvirt-glib-data = %{version}-%{release}
+Provides: libvirt-glib-devel = %{version}-%{release}
+Requires: libvirt-glib = %{version}-%{release}
 
 %description dev
 dev components for the libvirt-glib package.
@@ -64,10 +66,19 @@ doc components for the libvirt-glib package.
 %package lib
 Summary: lib components for the libvirt-glib package.
 Group: Libraries
-Requires: libvirt-glib-data
+Requires: libvirt-glib-data = %{version}-%{release}
+Requires: libvirt-glib-license = %{version}-%{release}
 
 %description lib
 lib components for the libvirt-glib package.
+
+
+%package license
+Summary: license components for the libvirt-glib package.
+Group: Default
+
+%description license
+license components for the libvirt-glib package.
 
 
 %package locales
@@ -79,16 +90,18 @@ locales components for the libvirt-glib package.
 
 
 %prep
-%setup -q -n libvirt-glib-1.0.0
+%setup -q -n libvirt-glib-2.0.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1493801722
+export SOURCE_DATE_EPOCH=1558030099
+export GCC_IGNORE_WERROR=1
+export LDFLAGS="${LDFLAGS} -fno-lto"
 %configure --disable-static
-make V=1  %{?_smp_mflags}
+make  %{?_smp_mflags}
 
 %check
 export LANG=C
@@ -98,8 +111,10 @@ export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1493801722
+export SOURCE_DATE_EPOCH=1558030099
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/libvirt-glib
+cp COPYING %{buildroot}/usr/share/package-licenses/libvirt-glib/COPYING
 %make_install
 %find_lang libvirt-glib
 
@@ -112,6 +127,10 @@ rm -rf %{buildroot}
 /usr/lib64/girepository-1.0/LibvirtGLib-1.0.typelib
 /usr/lib64/girepository-1.0/LibvirtGObject-1.0.typelib
 /usr/share/gir-1.0/*.gir
+/usr/share/vala/vapi/libvirt-gconfig-1.0.vapi
+/usr/share/vala/vapi/libvirt-glib-1.0.vapi
+/usr/share/vala/vapi/libvirt-gobject-1.0.deps
+/usr/share/vala/vapi/libvirt-gobject-1.0.vapi
 
 %files dev
 %defattr(-,root,root,-)
@@ -230,7 +249,7 @@ rm -rf %{buildroot}
 /usr/lib64/pkgconfig/libvirt-gobject-1.0.pc
 
 %files doc
-%defattr(-,root,root,-)
+%defattr(0644,root,root,0755)
 /usr/share/gtk-doc/html/Libvirt-gconfig/GVirConfigCapabilities.html
 /usr/share/gtk-doc/html/Libvirt-gconfig/GVirConfigDomain.html
 /usr/share/gtk-doc/html/Libvirt-gconfig/GVirConfigDomainSnapshot.html
@@ -303,11 +322,15 @@ rm -rf %{buildroot}
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libvirt-gconfig-1.0.so.0
-/usr/lib64/libvirt-gconfig-1.0.so.0.1000.0
+/usr/lib64/libvirt-gconfig-1.0.so.0.2000.0
 /usr/lib64/libvirt-glib-1.0.so.0
-/usr/lib64/libvirt-glib-1.0.so.0.1000.0
+/usr/lib64/libvirt-glib-1.0.so.0.2000.0
 /usr/lib64/libvirt-gobject-1.0.so.0
-/usr/lib64/libvirt-gobject-1.0.so.0.1000.0
+/usr/lib64/libvirt-gobject-1.0.so.0.2000.0
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/libvirt-glib/COPYING
 
 %files locales -f libvirt-glib.lang
 %defattr(-,root,root,-)

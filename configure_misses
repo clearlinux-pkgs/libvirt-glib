@@ -1,0 +1,3 @@
+Configure miss: whether the C compiler's -Wlogical-op gives bogus warnings
+Configure miss: whether -Wno-missing-field-initializers is needed
+Configure miss: /usr/bin/vapigen support for --metadatadir
