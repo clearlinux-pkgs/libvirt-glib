@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xBE86EBB415104FDF (dan@berrange.com)
 #
 Name     : libvirt-glib
-Version  : 2.0.0
-Release  : 13
-URL      : https://libvirt.org/sources/glib/libvirt-glib-2.0.0.tar.gz
-Source0  : https://libvirt.org/sources/glib/libvirt-glib-2.0.0.tar.gz
-Source99 : https://libvirt.org/sources/glib/libvirt-glib-2.0.0.tar.gz.asc
+Version  : 3.0.0
+Release  : 14
+URL      : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
+Source0  : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
+Source1  : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz.asc
 Summary  : libvirt glib integration for events
 Group    : Development/Tools
 License  : LGPL-2.1 LGPL-2.1+
@@ -21,7 +21,6 @@ BuildRequires : docbook-xml
 BuildRequires : gobject-introspection-dev
 BuildRequires : gtk-doc
 BuildRequires : gtk-doc-dev
-BuildRequires : intltool
 BuildRequires : libxslt-bin
 BuildRequires : pkgconfig(gio-2.0)
 BuildRequires : pkgconfig(glib-2.0)
@@ -90,31 +89,35 @@ locales components for the libvirt-glib package.
 
 
 %prep
-%setup -q -n libvirt-glib-2.0.0
+%setup -q -n libvirt-glib-3.0.0
+cd %{_builddir}/libvirt-glib-3.0.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
-export SOURCE_DATE_EPOCH=1558030099
+export LANG=C.UTF-8
+export SOURCE_DATE_EPOCH=1580931825
 export GCC_IGNORE_WERROR=1
-export LDFLAGS="${LDFLAGS} -fno-lto"
+export CFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$CFLAGS -fno-lto "
+export FFLAGS="$CFLAGS -fno-lto "
+export CXXFLAGS="$CXXFLAGS -fno-lto "
 %configure --disable-static
 make  %{?_smp_mflags}
 
 %check
-export LANG=C
+export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 make VERBOSE=1 V=1 %{?_smp_mflags} check
 
 %install
-export SOURCE_DATE_EPOCH=1558030099
+export SOURCE_DATE_EPOCH=1580931825
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libvirt-glib
-cp COPYING %{buildroot}/usr/share/package-licenses/libvirt-glib/COPYING
+cp %{_builddir}/libvirt-glib-3.0.0/COPYING %{buildroot}/usr/share/package-licenses/libvirt-glib/01a6b4bf79aca9b556822601186afab86e8c4fbf
 %make_install
 %find_lang libvirt-glib
 
@@ -148,6 +151,8 @@ cp COPYING %{buildroot}/usr/share/package-licenses/libvirt-glib/COPYING
 /usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-address-pci.h
 /usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-address-usb.h
 /usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-address.h
+/usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-capabilities-os.h
+/usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-capabilities.h
 /usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-channel.h
 /usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-chardev-source-pty.h
 /usr/include/libvirt-gconfig-1.0/libvirt-gconfig/libvirt-gconfig-domain-chardev-source-spiceport.h
@@ -322,15 +327,15 @@ cp COPYING %{buildroot}/usr/share/package-licenses/libvirt-glib/COPYING
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libvirt-gconfig-1.0.so.0
-/usr/lib64/libvirt-gconfig-1.0.so.0.2000.0
+/usr/lib64/libvirt-gconfig-1.0.so.0.3000.0
 /usr/lib64/libvirt-glib-1.0.so.0
-/usr/lib64/libvirt-glib-1.0.so.0.2000.0
+/usr/lib64/libvirt-glib-1.0.so.0.3000.0
 /usr/lib64/libvirt-gobject-1.0.so.0
-/usr/lib64/libvirt-gobject-1.0.so.0.2000.0
+/usr/lib64/libvirt-gobject-1.0.so.0.3000.0
 
 %files license
 %defattr(0644,root,root,0755)
-/usr/share/package-licenses/libvirt-glib/COPYING
+/usr/share/package-licenses/libvirt-glib/01a6b4bf79aca9b556822601186afab86e8c4fbf
 
 %files locales -f libvirt-glib.lang
 %defattr(-,root,root,-)
