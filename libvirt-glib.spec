@@ -6,7 +6,7 @@
 #
 Name     : libvirt-glib
 Version  : 3.0.0
-Release  : 14
+Release  : 15
 URL      : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
 Source0  : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
 Source1  : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz.asc
