@@ -1,3 +1,9 @@
-3.0.0
-gobject-introspection-dev
-vala
+4.0.0
+docbook-xml
+glib-dev
+gobject-introspection
+gtk-doc
+pkgconfig(glib-2.0)
+pkgconfig(gobject-introspection-1.0)
+pkgconfig(libvirt)
+pkgconfig(libxml-2.0)

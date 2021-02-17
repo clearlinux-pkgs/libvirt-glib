@@ -5,11 +5,11 @@
 # Source0 file verified with key 0xBE86EBB415104FDF (dan@berrange.com)
 #
 Name     : libvirt-glib
-Version  : 3.0.0
-Release  : 15
-URL      : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
-Source0  : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz
-Source1  : https://libvirt.org/sources/glib/libvirt-glib-3.0.0.tar.gz.asc
+Version  : 4.0.0
+Release  : 16
+URL      : https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz
+Source0  : https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz
+Source1  : https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz.asc
 Summary  : libvirt glib integration for events
 Group    : Development/Tools
 License  : LGPL-2.1 LGPL-2.1+
@@ -17,18 +17,15 @@ Requires: libvirt-glib-data = %{version}-%{release}
 Requires: libvirt-glib-lib = %{version}-%{release}
 Requires: libvirt-glib-license = %{version}-%{release}
 Requires: libvirt-glib-locales = %{version}-%{release}
+BuildRequires : buildreq-meson
 BuildRequires : docbook-xml
-BuildRequires : gobject-introspection-dev
+BuildRequires : glib-dev
+BuildRequires : gobject-introspection
 BuildRequires : gtk-doc
-BuildRequires : gtk-doc-dev
-BuildRequires : libxslt-bin
-BuildRequires : pkgconfig(gio-2.0)
 BuildRequires : pkgconfig(glib-2.0)
-BuildRequires : pkgconfig(gobject-2.0)
-BuildRequires : pkgconfig(gthread-2.0)
+BuildRequires : pkgconfig(gobject-introspection-1.0)
 BuildRequires : pkgconfig(libvirt)
 BuildRequires : pkgconfig(libxml-2.0)
-BuildRequires : vala
 
 %description
 This package provides integration between libvirt and the glib
@@ -89,36 +86,34 @@ locales components for the libvirt-glib package.
 
 
 %prep
-%setup -q -n libvirt-glib-3.0.0
-cd %{_builddir}/libvirt-glib-3.0.0
+%setup -q -n libvirt-glib-4.0.0
+cd %{_builddir}/libvirt-glib-4.0.0
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1580931825
+export SOURCE_DATE_EPOCH=1613589750
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
-export FCFLAGS="$CFLAGS -fno-lto "
-export FFLAGS="$CFLAGS -fno-lto "
+export FCFLAGS="$FFLAGS -fno-lto "
+export FFLAGS="$FFLAGS -fno-lto "
 export CXXFLAGS="$CXXFLAGS -fno-lto "
-%configure --disable-static
-make  %{?_smp_mflags}
+CFLAGS="$CFLAGS" CXXFLAGS="$CXXFLAGS" LDFLAGS="$LDFLAGS" meson --libdir=lib64 --prefix=/usr --buildtype=plain   builddir
+ninja -v -C builddir
 
 %check
 export LANG=C.UTF-8
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-make VERBOSE=1 V=1 %{?_smp_mflags} check
+meson test -C builddir
 
 %install
-export SOURCE_DATE_EPOCH=1580931825
-rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libvirt-glib
-cp %{_builddir}/libvirt-glib-3.0.0/COPYING %{buildroot}/usr/share/package-licenses/libvirt-glib/01a6b4bf79aca9b556822601186afab86e8c4fbf
-%make_install
+cp %{_builddir}/libvirt-glib-4.0.0/COPYING %{buildroot}/usr/share/package-licenses/libvirt-glib/01a6b4bf79aca9b556822601186afab86e8c4fbf
+DESTDIR=%{buildroot} ninja -C builddir install
 %find_lang libvirt-glib
 
 %files
@@ -130,10 +125,6 @@ cp %{_builddir}/libvirt-glib-3.0.0/COPYING %{buildroot}/usr/share/package-licens
 /usr/lib64/girepository-1.0/LibvirtGLib-1.0.typelib
 /usr/lib64/girepository-1.0/LibvirtGObject-1.0.typelib
 /usr/share/gir-1.0/*.gir
-/usr/share/vala/vapi/libvirt-gconfig-1.0.vapi
-/usr/share/vala/vapi/libvirt-glib-1.0.vapi
-/usr/share/vala/vapi/libvirt-gobject-1.0.deps
-/usr/share/vala/vapi/libvirt-gobject-1.0.vapi
 
 %files dev
 %defattr(-,root,root,-)
@@ -291,7 +282,6 @@ cp %{_builddir}/libvirt-glib-3.0.0/COPYING %{buildroot}/usr/share/package-licens
 /usr/share/gtk-doc/html/Libvirt-glib/index.html
 /usr/share/gtk-doc/html/Libvirt-glib/left-insensitive.png
 /usr/share/gtk-doc/html/Libvirt-glib/left.png
-/usr/share/gtk-doc/html/Libvirt-glib/object-tree.html
 /usr/share/gtk-doc/html/Libvirt-glib/right-insensitive.png
 /usr/share/gtk-doc/html/Libvirt-glib/right.png
 /usr/share/gtk-doc/html/Libvirt-glib/style.css
@@ -327,11 +317,11 @@ cp %{_builddir}/libvirt-glib-3.0.0/COPYING %{buildroot}/usr/share/package-licens
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libvirt-gconfig-1.0.so.0
-/usr/lib64/libvirt-gconfig-1.0.so.0.3000.0
+/usr/lib64/libvirt-gconfig-1.0.so.0.4000.0
 /usr/lib64/libvirt-glib-1.0.so.0
-/usr/lib64/libvirt-glib-1.0.so.0.3000.0
+/usr/lib64/libvirt-glib-1.0.so.0.4000.0
 /usr/lib64/libvirt-gobject-1.0.so.0
-/usr/lib64/libvirt-gobject-1.0.so.0.3000.0
+/usr/lib64/libvirt-gobject-1.0.so.0.4000.0
 
 %files license
 %defattr(0644,root,root,0755)
