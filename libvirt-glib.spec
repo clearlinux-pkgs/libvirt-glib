@@ -6,7 +6,7 @@
 #
 Name     : libvirt-glib
 Version  : 4.0.0
-Release  : 16
+Release  : 17
 URL      : https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz
 Source0  : https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz
 Source1  : https://libvirt.org/sources/glib/libvirt-glib-4.0.0.tar.xz.asc
@@ -26,6 +26,7 @@ BuildRequires : pkgconfig(glib-2.0)
 BuildRequires : pkgconfig(gobject-introspection-1.0)
 BuildRequires : pkgconfig(libvirt)
 BuildRequires : pkgconfig(libxml-2.0)
+BuildRequires : vala
 
 %description
 This package provides integration between libvirt and the glib
@@ -94,7 +95,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1613589750
+export SOURCE_DATE_EPOCH=1613689667
 export GCC_IGNORE_WERROR=1
 export CFLAGS="$CFLAGS -fno-lto "
 export FCFLAGS="$FFLAGS -fno-lto "
@@ -125,6 +126,12 @@ DESTDIR=%{buildroot} ninja -C builddir install
 /usr/lib64/girepository-1.0/LibvirtGLib-1.0.typelib
 /usr/lib64/girepository-1.0/LibvirtGObject-1.0.typelib
 /usr/share/gir-1.0/*.gir
+/usr/share/vala/vapi/libvirt-gconfig-1.0.deps
+/usr/share/vala/vapi/libvirt-gconfig-1.0.vapi
+/usr/share/vala/vapi/libvirt-glib-1.0.deps
+/usr/share/vala/vapi/libvirt-glib-1.0.vapi
+/usr/share/vala/vapi/libvirt-gobject-1.0.deps
+/usr/share/vala/vapi/libvirt-gobject-1.0.vapi
 
 %files dev
 %defattr(-,root,root,-)
